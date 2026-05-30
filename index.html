@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Where we going</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg, #141e30, #243b55);
+    overflow:hidden;
+}
+
+.container{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:30px;
+}
+
+.ruleta-container{
+    position:relative;
+    width:420px;
+    height:420px;
+}
+
+/* PUNTERO */
+
+.puntero{
+    position:absolute;
+    top:-18px;
+    left:50%;
+    transform:translateX(-50%);
+    width:0;
+    height:0;
+
+    border-left:22px solid transparent;
+    border-right:22px solid transparent;
+    border-top:45px solid white;
+
+    z-index:10;
+
+    filter:drop-shadow(0 0 5px rgba(0,0,0,0.5));
+}
+
+/* RULETA */
+
+.ruleta{
+    width:100%;
+    height:100%;
+    border-radius:50%;
+    border:10px solid white;
+    position:relative;
+    overflow:hidden;
+
+    background:
+    conic-gradient(
+        #ff595e 0deg 60deg,
+        #ffca3a 60deg 120deg,
+        #8ac926 120deg 180deg,
+        #1982c4 180deg 240deg,
+        #6a4c93 240deg 300deg,
+        #f15bb5 300deg 360deg
+    );
+
+    transition:transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+
+    box-shadow:
+    0 0 30px rgba(0,0,0,0.4),
+    inset 0 0 20px rgba(255,255,255,0.2);
+}
+
+/* TEXTOS */
+
+.labels{
+    position:absolute;
+    width:100%;
+    height:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.labels span{
+    position:absolute;
+
+    width:90px;
+
+    color:white;
+
+    font-size:15px;
+
+    font-weight:bold;
+
+    text-align:center;
+
+    line-height:1.2;
+
+    word-wrap:break-word;
+
+    white-space:normal;
+
+    text-shadow:2px 2px 5px black;
+}
+
+/* BOTÓN */
+
+button{
+    padding:15px 45px;
+    border:none;
+    border-radius:50px;
+    background:#ffcc00;
+    color:#222;
+    font-size:22px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+
+    box-shadow:0 5px 15px rgba(0,0,0,0.3);
+}
+
+button:hover{
+    transform:scale(1.05);
+    background:#ffd633;
+}
+
+/* RESULTADO */
+
+.resultado{
+    color:white;
+    font-size:30px;
+    font-weight:bold;
+    min-height:40px;
+    text-align:center;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="ruleta-container">
+
+        <div class="puntero"></div>
+
+        <div class="ruleta" id="ruleta">
+
+            <div class="labels">
+
+                <span style="transform: rotate(30deg) translateY(-150px);">
+                    Carmen de viboral
+                </span>
+
+                <span style="transform: rotate(90deg) translateY(-150px);">
+                    Jardin
+                </span>
+
+                <span style="transform: rotate(150deg) translateY(-150px);">
+                    Jerico
+                </span>
+
+                <span style="transform: rotate(210deg) translateY(-150px);">
+                    Santa Rosa de Osos
+                </span>
+
+                <span style="transform: rotate(270deg) translateY(-150px);">
+                    Yarumal
+                </span>
+
+                <span style="transform: rotate(330deg) translateY(-150px);">
+                    El retiro
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <button onclick="girarRuleta()">
+        GIRAR
+    </button>
+
+    <div class="resultado" id="resultado"></div>
+
+</div>
+
+<script>
+
+const ruleta = document.getElementById("ruleta");
+const resultado = document.getElementById("resultado");
+
+const opciones = [
+    "Carmen de viboral",
+    "Jardín",
+    "Jericó",
+    "Santa Rosa de Osos",
+    "Yarumal",
+    "El retiro"
+];
+
+let rotacionActual = 0;
+let girando = false;
+
+function girarRuleta() {
+    if (girando) return;
+    girando = true;
+    resultado.textContent = "";
+
+    const vueltasExtra = 360 * 6;
+    const anguloAleatorio = Math.random() * 360;
+
+    rotacionActual += vueltasExtra + anguloAleatorio;
+    ruleta.style.transform = `rotate(${rotacionActual}deg)`;
+
+    setTimeout(() => {
+        const normalizado = ((rotacionActual % 360) + 360) % 360;
+        const anguloApuntado = (360 - normalizado + 360) % 360;
+        const indice = Math.floor(anguloApuntado / (360 / 6)) % 6;
+
+        resultado.textContent =
+            "Tienes una cita conmigo en: " +
+            opciones[indice] + "❤️";
+
+        girando = false;
+    }, 5000);
+}
+
+</script>
+
+</body>
+</html>
